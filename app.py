@@ -2,7 +2,17 @@ from flask import Flask, jsonify, request
 from flask_restful import Api
 from yelpapi import YelpAPI
 import os
+import psycopg2
+from config import config
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.engine.url import URL
+
+
+
+
+from resources.user import UserRegister
 
 # from flask_jwt import JWT
 
@@ -19,11 +29,21 @@ yelp_api = YelpAPI(yelp_api_key)
 # from resources.store import Store, StoreList
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['PROPAGATE_EXCEPTIONS'] = True
 # app.secret_key = 'jose'
 api = Api(app)
+params = config()
+url = 'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}'
+url = url.format(**params)
+app.config['SQLALCHEMY_DATABASE_URI'] = url
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+api.add_resource(UserRegister, '/register')
 
 @app.errorhandler(500)
 def server_error(error=None):
@@ -35,10 +55,6 @@ def server_error(error=None):
     resp.status_code = 500
 
     return resp
-
-# @app.before_first_request
-# def create_tables():
-#     db.create_all()
 
 @app.route('/api/courses')
 def yelp_get_data():
@@ -55,16 +71,8 @@ def yelp_get_data():
     if response :
         return jsonify(response)
     return server_error()
-    
-# jwt = JWT(app, authenticate, identity)  # /auth
-
-# api.add_resource(Store, '/store/<string:name>')
-# api.add_resource(StoreList, '/stores')
-# api.add_resource(Item, '/item/<string:name>')
-# api.add_resource(ItemList, '/items')
-# api.add_resource(UserRegister, '/register')
 
 if __name__ == '__main__':
-    # from db import db
-    # db.init_app(app)
+    from db import db
+    db.init_app(app)
     app.run(port=PORT, debug=True)
