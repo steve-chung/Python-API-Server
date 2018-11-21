@@ -1,6 +1,19 @@
 from flask import Flask
 from flask_restful import Api
-from flask_jwt import JWT
+from yelpapi import YelpAPI
+import os
+from dotenv import load_dotenv
+
+# from flask_jwt import JWT
+
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+yelp_api_key = os.getenv('YELPKEY')
+PORT = os.getenv('PORT')
+yelp_api = YelpAPI(yelp_api_key)
+print(PORT)
+print(yelp_api_key)
 
 # from security import authenticate, identity
 # from resources.user import UserRegister
@@ -31,4 +44,4 @@ api = Api(app)
 if __name__ == '__main__':
     # from db import db
     # db.init_app(app)
-    app.run(port=5000, debug=True)
+    app.run(port=PORT, debug=True)
