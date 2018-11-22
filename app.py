@@ -5,15 +5,9 @@ import os
 import psycopg2
 from config import config
 from dotenv import load_dotenv
-
-
-
-
-
-from resources.user import UserRegister
-
-# from flask_jwt import JWT
-
+from resources.user import UserRegister, UserLogin
+from flask_jwt_extended import JWTManager
+from security import authenticate, identity
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -21,13 +15,12 @@ yelp_api_key = os.getenv('YELPKEY')
 PORT = os.getenv('PORT')
 yelp_api = YelpAPI(yelp_api_key)
 
-# from security import authenticate, identity
+
 
 
 app = Flask(__name__)
 
 app.secret_key = os.getenv('JWTKEY')
-
 api = Api(app)
 params = config()
 url = 'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}'
@@ -35,13 +28,14 @@ url = url.format(**params)
 app.config['SQLALCHEMY_DATABASE_URI'] = url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-
-
 @app.before_first_request
 def create_tables():
     db.create_all()
 
-api.add_resource(UserRegister, '/register')
+
+jwt = JWTManager(app) # this will create /auth
+print(jwt)
+
 
 @app.errorhandler(500)
 def server_error(error=None):
@@ -69,6 +63,9 @@ def yelp_get_data():
     if response :
         return jsonify(response)
     return server_error()
+
+api.add_resource(UserRegister, '/register')
+api.add_resource(UserLogin, '/login')
 
 if __name__ == '__main__':
     from db import db
