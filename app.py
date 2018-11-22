@@ -5,9 +5,10 @@ import os
 import psycopg2
 from config import config
 from dotenv import load_dotenv
-from resources.user import UserRegister, UserLogin
+from resources.user import UserRegister, UserLogin, TokenRefresh, UserLogout
 from flask_jwt_extended import JWTManager
-from security import authenticate, identity
+from models.user import RevokedTokenModel
+
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -27,6 +28,9 @@ url = 'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}'
 url = url.format(**params)
 app.config['SQLALCHEMY_DATABASE_URI'] = url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 
 @app.before_first_request
 def create_tables():
@@ -34,7 +38,45 @@ def create_tables():
 
 
 jwt = JWTManager(app) # this will create /auth
-print(jwt)
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    return RevokedTokenModel.is_jti_blacklisted(decrypted_token['jti']) 
+
+@jwt.expired_token_loader
+def expired_token_callback():
+    return jsonify({
+        'description': 'The token has expired',
+        'error': 'token_expired'
+    }), 401
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):
+    return jsonify({
+        'description': 'Signature verification failed',
+        'error': 'invalid_token'
+    }), 401
+
+@jwt.unauthorized_loader
+def missing_token_callback(error):
+    return jsonify({
+        'description': 'Request does not contain an access token.',
+        'error': 'authorization_required'
+    }), 401
+
+@jwt.needs_fresh_token_loader
+def token_not_fresh_callback():
+    return jsonify({
+        'description': 'The token is not fresh.',
+        'error': 'fresh_token_required'
+    }), 401
+
+@jwt.revoked_token_loader
+def revoked_token_callback():
+    return jsonify({
+        'description': 'The token has been revoked.',
+        'error':'token_revoked'
+    }), 401
 
 
 @app.errorhandler(500)
@@ -66,6 +108,8 @@ def yelp_get_data():
 
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserLogin, '/login')
+api.add_resource(TokenRefresh, '/refresh')
+api.add_resource(UserLogout, '/logout')
 
 if __name__ == '__main__':
     from db import db

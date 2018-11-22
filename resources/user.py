@@ -1,7 +1,13 @@
 from flask_restful import Resource, reqparse
-from models.user import UserModel 
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt
-
+from models.user import UserModel, RevokedTokenModel 
+from flask_jwt_extended import (
+  create_access_token, 
+  create_refresh_token, 
+  jwt_required, 
+  jwt_refresh_token_required, 
+  get_jwt_identity, 
+  get_raw_jwt
+)
 
 parser = reqparse.RequestParser()
 parser.add_argument(
@@ -27,7 +33,7 @@ class UserRegister(Resource):
     )
     try:
       new_user.save_to_db()
-      access_token = create_access_token(identity=data['email'])
+      access_token = create_access_token(identity=data['email'], fresh=True)
       refresh_token = create_refresh_token(identity=data['email'])
       return {
         'message':'User {} was created'.format(data['name']),
@@ -47,7 +53,7 @@ class UserLogin(Resource):
       return {'message': 'User {} doesn\'t exist'.format(data['email'])}
 
     if UserModel.verify_hash(data['password'], current_user.password):
-      access_token = create_access_token(identity=data['email'])
+      access_token = create_access_token(identity=data['email'], fresh=True)
       refresh_token = create_refresh_token(identity=data['email'])
       return {
         'message': 'Logged in as {}'.format(current_user.name),
@@ -62,5 +68,17 @@ class TokenRefresh(Resource):
   @jwt_refresh_token_required
   def post(self):
     current_user = get_jwt_identity()
-    access_token = create_access_token(identity=current_user)
+    access_token = create_access_token(identity=current_user, fresh=False)
     return {'access_token': access_token}
+
+
+class UserLogout(Resource):
+  @jwt_required
+  def post(self):
+    jti = get_raw_jwt()['jti']
+    try:
+      revoked_token = RevokedTokenModel(jti=jti)
+      revoked_token.add()
+      return {'message': 'Successful Loged Out'}, 200
+    except:
+      return {'message': 'Something went wrong'}, 500
