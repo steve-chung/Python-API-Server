@@ -5,9 +5,7 @@ import os
 import psycopg2
 from config import config
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.engine.url import URL
+
 
 
 
@@ -24,12 +22,12 @@ PORT = os.getenv('PORT')
 yelp_api = YelpAPI(yelp_api_key)
 
 # from security import authenticate, identity
-# from resources.user import UserRegister
-# from resources.item import Item, ItemList
-# from resources.store import Store, StoreList
+
 
 app = Flask(__name__)
-# app.secret_key = 'jose'
+
+app.secret_key = os.getenv('JWTKEY')
+
 api = Api(app)
 params = config()
 url = 'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}'
