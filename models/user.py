@@ -1,5 +1,7 @@
 from db import db
 from passlib.hash import pbkdf2_sha256 as sha256
+from models.players import Players
+from models.games import Game
 
 class UserModel(db.Model):
   __tablename__ = 'users'
@@ -9,6 +11,8 @@ class UserModel(db.Model):
   password = db.Column(db.String(100))
   name = db.Column(db.String(25), nullable=False)
   phone = db.Column(db.String(15))
+  players = db.relationship('Players', backref='players', lazy=True)
+  games = db.relationship('Game', backref='games', lazy=True)
 
   def __init__(self, email, password, phone, name):
     self.email = email
