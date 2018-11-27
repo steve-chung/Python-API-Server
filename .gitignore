@@ -1,3 +1,7 @@
-./__pycache__
-./models/__pycache__
-./resources/__pycache__
+./__pycache__/config.cpython-36.pyc
+./__pycache__/db.cpython-36.pyc
+./models/__pycache__/games.cpython-36.pyc
+./models/__pycache__/players.cpython-36.pyc
+./models/__pycache__/user.cpython-36.pyc
+./resources/__pycache__/reserve.cpython-36.pyc
+./resources/__pycache__/user.cpython-36.pyc

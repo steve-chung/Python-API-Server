@@ -6,3 +6,19 @@ from models.games import Game
 from ast import literal_eval
 
 class PlayGame(Resource):
+
+  @jwt_required
+  def get(self):
+    user_email = get_jwt_identity()
+    user = UserModel.find_by_email(user_email)
+    play_game = Game.find_by_latest(user.id)
+    print(play_game.date)
+    if play_game:
+      return {
+        'game_id': play_game.id,
+        'date': play_game.date.__str__(),
+        'course': play_game.course
+      }
+    return {
+      'message': 'Something has gone wrong!'
+    }, 500

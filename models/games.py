@@ -32,3 +32,8 @@ class Game(db.Model):
   def find_by_id(cls, _id):
     return cls.query.filter_by(id = _id).first()
 
+  @classmethod
+  def find_by_latest(cls, user_id):
+    date = cls.date
+    return cls.query.filter_by(user_id = user_id).\
+           order_by(date.desc()).first()
