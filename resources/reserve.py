@@ -20,17 +20,13 @@ class reserveCourse(Resource):
   def post(self):
     data = parser.parse_args()
     user_email = get_jwt_identity()
-    print(user_email)
     user = UserModel.find_by_email(user_email)
-    print(user.id)
     players = data['players']
     
     try:
     
       for player in players:
         convert_player = literal_eval(player)
-        print(player)
-        print(type(player))
         new_players = Players(
           user_id=user.id,
           email=convert_player['email'],

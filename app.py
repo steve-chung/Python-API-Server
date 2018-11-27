@@ -7,6 +7,7 @@ from config import config
 from dotenv import load_dotenv
 from resources.user import UserRegister, UserLogin, TokenRefresh, UserLogout
 from resources.reserve import reserveCourse
+from resources.holes import createHoles
 from flask_jwt_extended import JWTManager
 from models.user import RevokedTokenModel
 
@@ -112,6 +113,7 @@ api.add_resource(UserLogin, '/login')
 api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(UserLogout, '/logout')
 api.add_resource(reserveCourse, '/reserve')
+api.add_resource(createHoles, '/holes')
 
 if __name__ == '__main__':
     from db import db
