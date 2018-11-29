@@ -12,13 +12,15 @@ class Game(db.Model):
   date = db.Column(db.Date)
   player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
   course = db.Column(db.String(30), nullable=False)
+  total_score = db.Column(db.Integer, nullable=False)
 
 
-  def __init__(self, user_id, course, date, player_id):
+  def __init__(self, user_id, course, date, player_id, total_score):
     self.user_id = user_id
     self.course = course
     self.player_id = player_id
     self.date = date
+    self.total_score = total_score
 
   def save_to_db(self):
     try:
