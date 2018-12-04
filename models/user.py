@@ -1,7 +1,5 @@
 from db import db
 from passlib.hash import pbkdf2_sha256 as sha256
-from models.players import Players
-from models.games import Game
 
 class UserModel(db.Model):
   __tablename__ = 'users'

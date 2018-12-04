@@ -1,10 +1,9 @@
 from db import db
-from models.players import Players
 from sqlalchemy.exc import SQLAlchemyError
-from ast import literal_eval
 
 
-class Game(db.Model):
+
+class GameModel(db.Model):
   __tablename__ = 'games'
 
   id = db.Column(db.Integer, primary_key=True)

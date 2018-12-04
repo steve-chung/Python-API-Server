@@ -1,9 +1,8 @@
 from db import db
-from models.games import Game
 from sqlalchemy.exc import SQLAlchemyError
 from ast import literal_eval
 
-class Holes(db.Model):
+class HolesModel(db.Model):
   __tablename__ = 'holes'
 
   id = db.Column(db.Integer, primary_key=True)
