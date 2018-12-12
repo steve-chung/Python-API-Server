@@ -1,4 +1,6 @@
+
 from flask import Flask, jsonify, request
+from flask_sqlalchemy import get_debug_queries
 from flask_restful import Api
 from yelpapi import YelpAPI
 import os
@@ -9,8 +11,32 @@ from resources.user import UserRegister, UserLogin, TokenRefresh, UserLogout
 from resources.reserve import reserveCourse
 from resources.game import PlayGame
 from resources.holes import createHoles
+from resources.scores import Scores
 from flask_jwt_extended import JWTManager
 from models.user import RevokedTokenModel
+
+
+def sql_debug(response):
+    queries = list(get_debug_queries())
+    query_str = ''
+    total_duration = 0.0
+    for q in queries:
+        total_duration += q.duration
+        stmt = str(q.statement % q.parameters).replace('\n', '\n       ')
+        query_str += 'Query: {0}\nDuration: {1}ms\n\n'.format(
+            stmt, round(q.duration * 1000, 2))
+
+    print('=' * 80)
+    print(' SQL Queries - {0} Queries Executed in {1}ms'.format(len(queries), round(total_duration * 1000, 2)))
+    print('=' * 80)
+    print(query_str.rstrip('\n'))
+    print('=' * 80 + '\n')
+
+    return response
+
+
+
+
 
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -116,6 +142,8 @@ api.add_resource(UserLogout, '/logout')
 api.add_resource(reserveCourse, '/reserve')
 api.add_resource(createHoles, '/holes')
 api.add_resource(PlayGame, '/playGame')
+
+app.after_request(sql_debug)
 
 if __name__ == '__main__':
     from db import db

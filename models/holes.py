@@ -7,6 +7,7 @@ class HolesModel(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
+  game = db.relationship('GameModel')
   hole_number = db.Column(db.Integer, nullable=False)
   par = db.Column(db.Integer, nullable=False)
 

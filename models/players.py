@@ -5,6 +5,7 @@ class PlayersModel(db.Model):
   __tablename__ = 'players'
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+  user = db.relationship('UserModel')
   email = db.Column(db.String(80), unique=True, nullable=False)
   name = db.Column(db.String(25), nullable=False)
   aveScore = db.Column(db.Integer)

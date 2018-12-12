@@ -9,8 +9,12 @@ class UserModel(db.Model):
   password = db.Column(db.String(100))
   name = db.Column(db.String(25), nullable=False)
   phone = db.Column(db.String(15))
-  players = db.relationship('Players', backref='players', lazy=True)
-  games = db.relationship('Game', backref='games', lazy=True)
+  holes = db.relationship('HolesModel', secondary='scores',
+                          backref=db.backref('holes', lazy='dynamic'))
+  players = db.relationship(
+      'PlayersModel',  backref='players', lazy='dynamic')
+  games = db.relationship(
+      'GameModel', secondary='scores', backref=db.backref('games', lazy='dynamic'))
 
   def __init__(self, email, password, phone, name):
     self.email = email
