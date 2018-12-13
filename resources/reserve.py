@@ -46,7 +46,7 @@ class reserveCourse(Resource):
           total_score=int(data['totalScores'][0])
         )
         new_games.save_to_db()
-        new_games.games.append(user)
+        new_games.game.append(user)
         db.session.commit()
       
       return {

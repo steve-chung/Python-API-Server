@@ -8,13 +8,14 @@ class ScoresModel(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   hole_id = db.Column(db.Integer, db.ForeignKey('holes.id'))
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-  # stat_id = db.Column(db.Integer, db.ForeignKey('stat.id'))
+  stat_id = db.Column(db.Integer, db.ForeignKey('stat.id'))
   game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
 
-  def __init__(self, hole_id, user_id, game_id):
+  def __init__(self, hole_id, user_id, game_id, stat_id):
     self.game_id = game_id
     self.hole_id = hole_id
     self.user_id = user_id
+    self.stat_id = stat_id
 
   def save_to_db(self):
     try:
