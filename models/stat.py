@@ -20,86 +20,16 @@ class StatModel(db.Model):
     self.secondDistance = secondDistance
     self.stroksGreen = stroksGreen
     self.totalShot = totalShot
+  
+  @classmethod
+  def find_by_id(cls, stat_id):
+    return cls.query.filter_by(id=stat_id).first()
 
-
-  # @classmethod
-  # def find_by_firstClub(cls, firstClub):
-  #   return cls.query.filter_by(firstClub=firstClub).first()
-
-  # @classmethod
-  # def find_by_firstDistance(cls, firstDistance):
-  #   return cls.query.filter_by(firstDistance=firstDistance).first()
-
-  # @classmethod
-  # def find_by_secondClub(cls, secondClub):
-  #   return cls.query.filter_by(secondClub=secondClub).first()
-
-  # @classmethod
-  # def find_by_secondDistance(cls, secondDistance):
-  #   return cls.query.filter_by(secondDistance=secondDistance).first()
-
-  # @classmethod
-  # def find_by_stroksGreen(cls, stroksGreen):
-  #   return cls.query.filter_by(stroksGreen=stroksGreen).first()
-
-  # @classmethod
-  # def find_by_totalShot(cls, totalShot):
-  #   return cls.query.filter_by(totalShot=totalShot).first()
-
-  # @classmethod
-  # def update_firstClub(cls, firstClub):
-  #   try:
-  #     cls.query.filter(scores_id == scores_id).update({'firstClub': firstClub})
-  #     cls.commit()
-  #   except:
-  #     cls.rollback()
-  #     raise
-
-  # @classmethod
-  # def update_firstDistance(cls, scores_id, firstDistance):
-  #   try:
-  #     cls.query.filter(scores_id == scores_id).update({'firstDistance': firstDistance})
-  #     cls.commit()
-  #   except:
-  #     cls.rollback()
-  #     raise
-
-  # @classmethod
-  # def update_secondClub(cls, scores_id, secondClub):
-  #   try:
-  #     cls.query.filter(scores_id == scores_id).update({'secondClub': secondClub})
-  #     cls.commit()
-  #   except:
-  #     cls.rollback()
-  #     raise
-
-  # @classmethod
-  # def update_secondDistance(cls, scores_id, secondDistance):
-  #   try:
-  #     cls.query.filter(scores_id == scores_id).update({
-  #                              'secondDistance': secondDistance})
-  #     cls.commit()
-  #   except:
-  #     cls.rollback()
-  #     raise
-
-  # @classmethod
-  # def update_stroksGreen(cls, scores_id, stroksGreen):
-  #   try:
-  #     cls.query.filter(scores_id == scores_id).update({'stroksGreen': stroksGreen})
-  #     cls.commit()
-  #   except:
-  #     cls.rollback()
-  #     raise
-
-  # @classmethod
-  # def update_totalScore(cls, scores_id, totalScore):
-  #   try:
-  #     cls.query.filter(scores_id == scores_id).update({'totalScore': totalScore})
-  #     cls.commit()
-  #   except:
-  #     cls.rollback()
-  #     raise
+  def json(self):
+    return {'firstClub': self.firstClub,
+            'firstDistance': self.firstDistance, 'secondClub': self.secondClub,
+            'secondDistance': self.secondDistance, 'stroksGreen': self.stroksGreen,
+            'totalShot': self.totalShot}
   
   def save_to_db(self):
     db.session.add(self)
