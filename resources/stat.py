@@ -12,9 +12,9 @@ from ast import literal_eval
 
 parser = reqparse.RequestParser()
 parser.add_argument(
-    'game_id', help='This field cannot be blank', required=True)
+    'game_id', help='This field cannot be blank', required=False)
 parser.add_argument(
-    'hole_id', help='This field cannot be blank', required=True)
+    'hole_id', help='This field cannot be blank', required=False)
 parser.add_argument(
     'firstClub', help='This field cannot be blank', required=True)
 parser.add_argument(
@@ -27,8 +27,43 @@ parser.add_argument(
     'stroksGreen', help='This field cannot be blank', required=True)
 parser.add_argument(
     'totalShot', help='This field cannot be blank', required=True)
+parser.add_argument(
+    'stat_id', help='This field cannot be blank', required=False)
+
 
 class Stat(Resource):
+
+  def get(self, stat_id):
+    stat = StatModel.find_by_id(stat_id)
+    if stat:
+      return stat.json()
+    return {'message': 'Stat not found'}
+
+  
+    
+  @fresh_jwt_required
+  def put(self, stat_id):
+    data = parser.parse_args()
+    firstClub = data['firstClub']
+    firstDistance = data['firstDistance']
+    secondClub = data['secondClub']
+    secondDistance = data['secondDistance']
+    stroksGreen = data['stroksGreen']
+    totalShot = data['totalShot']
+
+    try: 
+        # data = parse.parse_args()
+        stat_id = data['stat_id']
+        StatModel.update_stat(stat_id=stat_id, firstClub=firstClub, firstDistance=firstDistance,
+                            secondClub=secondClub, secondDistance=secondDistance, stroksGreen=stroksGreen,
+                            totalShot=totalShot)
+        return {'message': 'successfully update a stat {}'.format(stat_id),
+                'stat_id': '{}'.format(stat_id)}
+    except Exception as e:
+        print(e)
+        return {'message': 'something went wrong'}
+
+class StatPost(Resource):
   @fresh_jwt_required
   def post(self):
     data = parser.parse_args()
@@ -43,13 +78,14 @@ class Stat(Resource):
     stroksGreen = data['stroksGreen']
     totalShot = data['totalShot']
     try:
-      new_stat = StatModel(firstClub = firstClub, firstDistance = firstDistance,
-        secondClub = secondClub, secondDistance = secondDistance, stroksGreen = stroksGreen,
-        totalShot = totalShot)
+      new_stat = StatModel(firstClub=firstClub, firstDistance=firstDistance,
+                           secondClub=secondClub, secondDistance=secondDistance, stroksGreen=stroksGreen,
+                           totalShot=totalShot)
       new_stat.save_to_db()
-      ScoresModel.update_stat_id(user_id=user.id, game_id=game_id, hole_id=hole_id, stat_id = new_stat.id)
-      return {'message': 'successfully add hole {}'.format(hole_id)}
+      ScoresModel.update_stat_id(
+          user_id=user.id, game_id=game_id, hole_id=hole_id, stat_id=new_stat.id)
+      return {'message': 'successfully add hole {}'.format(hole_id),
+              'stat_id': '{}'.format(new_stat.id)}
     except Exception as e:
       print(e)
       return {'message': 'something went wrong'}
-
