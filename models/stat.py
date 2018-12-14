@@ -1,4 +1,5 @@
 from db import db
+from sqlalchemy.exc import SQLAlchemyError
 
 class StatModel(db.Model):
   __tablename__= 'stat'
@@ -21,29 +22,29 @@ class StatModel(db.Model):
     self.totalShot = totalShot
 
 
-  @classmethod
-  def find_by_firstClub(cls, firstClub):
-    return cls.query.filter_by(firstClub=firstClub).first()
+  # @classmethod
+  # def find_by_firstClub(cls, firstClub):
+  #   return cls.query.filter_by(firstClub=firstClub).first()
 
-  @classmethod
-  def find_by_firstDistance(cls, firstDistance):
-    return cls.query.filter_by(firstDistance=firstDistance).first()
+  # @classmethod
+  # def find_by_firstDistance(cls, firstDistance):
+  #   return cls.query.filter_by(firstDistance=firstDistance).first()
 
-  @classmethod
-  def find_by_secondClub(cls, secondClub):
-    return cls.query.filter_by(secondClub=secondClub).first()
+  # @classmethod
+  # def find_by_secondClub(cls, secondClub):
+  #   return cls.query.filter_by(secondClub=secondClub).first()
 
-  @classmethod
-  def find_by_secondDistance(cls, secondDistance):
-    return cls.query.filter_by(secondDistance=secondDistance).first()
+  # @classmethod
+  # def find_by_secondDistance(cls, secondDistance):
+  #   return cls.query.filter_by(secondDistance=secondDistance).first()
 
-  @classmethod
-  def find_by_stroksGreen(cls, stroksGreen):
-    return cls.query.filter_by(stroksGreen=stroksGreen).first()
+  # @classmethod
+  # def find_by_stroksGreen(cls, stroksGreen):
+  #   return cls.query.filter_by(stroksGreen=stroksGreen).first()
 
-  @classmethod
-  def find_by_totalShot(cls, totalShot):
-    return cls.query.filter_by(totalShot=totalShot).first()
+  # @classmethod
+  # def find_by_totalShot(cls, totalShot):
+  #   return cls.query.filter_by(totalShot=totalShot).first()
 
   # @classmethod
   # def update_firstClub(cls, firstClub):
@@ -103,5 +104,21 @@ class StatModel(db.Model):
   def save_to_db(self):
     db.session.add(self)
     db.session.commit()
+
+  @classmethod
+  def update_stat(cls, stat_id, firstClub, firstDistance,
+                  secondClub, secondDistance, stroksGreen, totalShot):
+    try: 
+      updated_stat = cls.query.filter_by(id=stat_id).first()
+      updated_stat.firstClub = firstClub
+      updated_stat.firstDistance = firstDistance
+      updated_stat.secondClub = secondClub
+      updated_stat.secondDistance = secondDistance
+      updated_stat.stroksGreen = stroksGreen
+      updated_stat.totalShot = totalShot
+      db.session.commit()
+    except SQLAlchemyError as e:
+      db.session.rollback()
+      print (e) 
 
   

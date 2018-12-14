@@ -34,16 +34,10 @@ class ScoresModel(db.Model):
     try:
       print(type(user_id))
       updated_score = cls.query.filter(cls.user_id == user_id, cls.game_id == game_id, cls.hole_id == hole_id).first()
-        # .update({'stat_id': stat_id}, synchronize_session='fetch')
-      # db.session.add(updated_score)
-      print(updated_score)
-      print(updated_score.stat_id)
       updated_score.stat_id = stat_id
-      print(updated_score.stat_id)
-      # db.session.add(updated_score)
       db.session.commit()
       return {'message': 'successfully updated score stat.id'}
     except SQLAlchemyError as e:
-      # cls.rollback()
+      db.session.rollback()
       print (e)
 
