@@ -28,3 +28,22 @@ class ScoresModel(db.Model):
   @classmethod
   def find_by_id(cls, _id):
     return cls.query.filter_by(id = _id).first() 
+  
+  @classmethod
+  def update_stat_id(cls, user_id, game_id, stat_id, hole_id):
+    try:
+      print(type(user_id))
+      updated_score = cls.query.filter(cls.user_id == user_id, cls.game_id == game_id, cls.hole_id == hole_id).first()
+        # .update({'stat_id': stat_id}, synchronize_session='fetch')
+      # db.session.add(updated_score)
+      print(updated_score)
+      print(updated_score.stat_id)
+      updated_score.stat_id = stat_id
+      print(updated_score.stat_id)
+      # db.session.add(updated_score)
+      db.session.commit()
+      return {'message': 'successfully updated score stat.id'}
+    except SQLAlchemyError as e:
+      # cls.rollback()
+      print (e)
+

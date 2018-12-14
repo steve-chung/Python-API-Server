@@ -28,6 +28,7 @@ class reserveCourse(Resource):
     try:
       for player in players:
         convert_player = literal_eval(player)
+        print(player)
         new_players = PlayersModel(
           user_id=user.id,
           email=convert_player['email'],

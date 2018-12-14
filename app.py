@@ -12,6 +12,7 @@ from resources.reserve import reserveCourse
 from resources.game import PlayGame
 from resources.holes import createHoles
 from resources.scores import Scores
+from resources.stat import Stat
 from flask_jwt_extended import JWTManager
 from models.user import RevokedTokenModel
 
@@ -142,7 +143,7 @@ api.add_resource(UserLogout, '/logout')
 api.add_resource(reserveCourse, '/reserve')
 api.add_resource(createHoles, '/holes')
 api.add_resource(PlayGame, '/playGame')
-
+api.add_resource(Stat, '/stat')
 app.after_request(sql_debug)
 
 if __name__ == '__main__':
