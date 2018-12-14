@@ -1,24 +1,25 @@
 from db import db
-from models.players import Players
 from sqlalchemy.exc import SQLAlchemyError
-from ast import literal_eval
 
 
-class Game(db.Model):
+
+class GameModel(db.Model):
   __tablename__ = 'games'
 
   id = db.Column(db.Integer, primary_key=True)
-  user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
   date = db.Column(db.Date)
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
   player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
   course = db.Column(db.String(30), nullable=False)
+  total_score = db.Column(db.Integer, nullable=False)
 
 
-  def __init__(self, user_id, course, date, player_id):
-    self.user_id = user_id
+  def __init__(self, user_id, course, date, player_id, total_score):
     self.course = course
+    self.user_id = user_id
     self.player_id = player_id
     self.date = date
+    self.total_score = total_score
 
   def save_to_db(self):
     try:

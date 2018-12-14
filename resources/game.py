@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import jsonify
 from flask_jwt_extended import get_jwt_identity,  jwt_required
 from models.user import UserModel
-from models.games import Game
+from models.games import GameModel
 from ast import literal_eval
 
 class PlayGame(Resource):
@@ -11,8 +11,7 @@ class PlayGame(Resource):
   def get(self):
     user_email = get_jwt_identity()
     user = UserModel.find_by_email(user_email)
-    play_game = Game.find_by_latest(user.id)
-    print(play_game.date)
+    play_game = GameModel.find_by_latest(user.id)
     if play_game:
       return {
         'game_id': play_game.id,
