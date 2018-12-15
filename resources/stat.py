@@ -50,7 +50,7 @@ class Stat(Resource):
     secondDistance = data['secondDistance']
     stroksGreen = data['stroksGreen']
     totalShot = data['totalShot']
-
+    found_stat = StatModel.find_by_id(stat_id)
     try: 
         # data = parse.parse_args()
         stat_id = data['stat_id']
@@ -71,6 +71,9 @@ class StatPost(Resource):
     user = UserModel.find_by_email(user_email)
     hole_id = data['hole_id']
     game_id = data['game_id']
+    found_stat = ScoresModel.find_by_hole_id(hole_id, game_id)
+    if found_stat:
+        return {'message': 'Stat {} is already exists.'.format(found_stat.stat_id)}, 500
     firstClub = data['firstClub']
     firstDistance = data['firstDistance']
     secondClub = data['secondClub']
@@ -88,4 +91,4 @@ class StatPost(Resource):
               'stat_id': '{}'.format(new_stat.id)}
     except Exception as e:
       print(e)
-      return {'message': 'something went wrong'}
+      return {'message': 'something went wrong'}, 500

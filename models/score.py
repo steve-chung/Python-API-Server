@@ -30,6 +30,16 @@ class ScoresModel(db.Model):
     return cls.query.filter_by(id = _id).first() 
   
   @classmethod
+  def find_by_game_id(cls, user_id, game_id):
+    return cls.query.filter(cls.user_id == user_id, cls.game_id == game_id, cls.hole_id != None )\
+          .first()
+
+  @classmethod
+  def find_by_hole_id(cls, hole_id, game_id):
+    return cls.query.filter(cls.hole_id == hole_id, cls.game_id == game_id)\
+            .first()
+
+  @classmethod
   def update_stat_id(cls, user_id, game_id, stat_id, hole_id):
     try:
       print(type(user_id))

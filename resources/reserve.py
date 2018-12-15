@@ -28,17 +28,18 @@ class reserveCourse(Resource):
     try:
       for player in players:
         convert_player = literal_eval(player)
-        print(player)
-        new_players = PlayersModel(
-          user_id=user.id,
-          email=convert_player['email'],
-          name=convert_player['name'],
-          aveScore=convert_player['aveScore']
-        )
-        new_players.save_to_db()
-      for player in players:
-        convert_player = literal_eval(player)
-        new_player = PlayersModel.find_by_email(convert_player['email'], user.id)
+        new_player = None
+        print(convert_player['email'])
+        new_player = PlayersModel.find_by_email(
+            convert_player['email'], user.id)
+        if new_player== None: 
+          new_player = PlayersModel(
+            user_id=user.id,
+            email=convert_player['email'],
+            name=convert_player['name'],
+            aveScore=convert_player['aveScore']
+          )
+          new_player.save_to_db()
         new_games = GameModel(
           course = data['course'],
           date = data['date'],
