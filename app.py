@@ -1,6 +1,7 @@
 
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import get_debug_queries
+from db import db
 from flask_restful import Api
 from yelpapi import YelpAPI
 import os
@@ -11,11 +12,10 @@ from resources.user import UserRegister, UserLogin, TokenRefresh, UserLogout
 from resources.reserve import reserveCourse
 from resources.game import PlayGame
 from resources.holes import createHoles
-from resources.scores import Scores
 from resources.stat import Stat, StatPost
 from flask_jwt_extended import JWTManager
 from models.user import RevokedTokenModel
-
+# from models.stat_view import StatView
 
 def sql_debug(response):
     queries = list(get_debug_queries())
@@ -34,7 +34,6 @@ def sql_debug(response):
     print('=' * 80 + '\n')
 
     return response
-
 
 
 
@@ -61,6 +60,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+
+db.init_app(app)
+with app.app_context():
+        # db.Model.metadata.reflect(db.engine, views=True)
+        from resources.stat_view import StatView
 
 @app.before_first_request
 def create_tables():
