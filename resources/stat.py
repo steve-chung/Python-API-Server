@@ -72,7 +72,7 @@ class StatPost(Resource):
     hole_id = data['hole_id']
     game_id = data['game_id']
     found_stat = ScoresModel.find_by_hole_id(hole_id, game_id)
-    if found_stat:
+    if found_stat.stat_id != None :
         return {'message': 'Stat {} is already exists.'.format(found_stat.stat_id)}, 500
     firstClub = data['firstClub']
     firstDistance = data['firstDistance']
@@ -85,6 +85,7 @@ class StatPost(Resource):
                            secondClub=secondClub, secondDistance=secondDistance, stroksGreen=stroksGreen,
                            totalShot=totalShot)
       new_stat.save_to_db()
+      print(new_stat.id)
       ScoresModel.update_stat_id(
           user_id=user.id, game_id=game_id, hole_id=hole_id, stat_id=new_stat.id)
       return {'message': 'successfully add hole {}'.format(hole_id),

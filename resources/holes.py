@@ -15,7 +15,6 @@ parser.add_argument(
 parser.add_argument(
     'holes', action='append', help='This field cannot be blank', required=True)
 
-
 class createHoles(Resource):
   @fresh_jwt_required
   def post(self):
