@@ -15,7 +15,6 @@ from resources.holes import createHoles
 from resources.stat import Stat, StatPost
 from flask_jwt_extended import JWTManager
 from models.user import RevokedTokenModel
-# from models.stat_view import StatView
 
 def sql_debug(response):
     queries = list(get_debug_queries())
@@ -149,6 +148,7 @@ api.add_resource(createHoles, '/holes')
 api.add_resource(PlayGame, '/playGame')
 api.add_resource(StatPost, '/stat')
 api.add_resource(Stat, '/stat/<int:stat_id>')
+api.add_resource(StatView, '/stat/view/<int:user_id>')
 app.after_request(sql_debug)
 
 if __name__ == '__main__':
