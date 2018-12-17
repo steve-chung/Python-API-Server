@@ -17,4 +17,7 @@ class StatView(Resource):
                     db.Column("score_id", db.Integer, primary_key=True), 
                     extend_existing=True, autoload=True)
 
-  print(MyView)
+  query = MyView.select().order_by(MyView.c.date).where(MyView.c.user_id == 1)
+  results = db.engine.execute(query)
+  for result in results:
+    print(result.date)
