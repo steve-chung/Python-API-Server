@@ -361,7 +361,7 @@ python3 app.py
 ##### REQUEST
 ```json
 {
-{
+
 	"game_id":14,
 	"hole_id":757,
 	"firstClub": "Driver",
@@ -395,7 +395,7 @@ python3 app.py
 ##### REQUEST
 ```json
 {
-{
+
 	"game_id":14,
 	"hole_id":757,
 	"firstClub": "Driver",
@@ -430,7 +430,7 @@ python3 app.py
 ##### REQUEST
 ```json
 {
-{
+
 	"game_id":14,
 	"hole_id":757,
 	"firstClub": "Driver",
